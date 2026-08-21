@@ -1,0 +1,820 @@
+<title>카피바라 몸짱 만들기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap">
+
+<style>
+  :root {
+    --ground:    #EDEFEA;
+    --surface:   #FAFBF8;
+    --surface-2: #E2E5DD;
+    --line:      #D2D7C9;
+    --line-soft: #E1E5DA;
+    --ink:       #1E2320;
+    --ink-2:     #4C534A;
+    --ink-3:     #7B8378;
+    --accent:    #17705B;
+    --accent-soft: #DCEFE8;
+    --code-bg:   #E6EAE1;
+
+    /* 게임 판정 등급 색 — 코드의 perfect/good/miss 대응. 의미 고정값 */
+    --perfect: #B5810C;
+    --good:    #2E8B57;
+    --miss:    #C0392B;
+
+    --f-display: "Do Hyeon", "Malgun Gothic", sans-serif;
+    --f-body: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+    --f-mono: "Roboto Mono", ui-monospace, Consolas, monospace;
+
+    --measure: 66ch;
+    --pad: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:    #131614;
+      --surface:   #1B1F1C;
+      --surface-2: #242923;
+      --line:      #333A31;
+      --line-soft: #272D26;
+      --ink:       #E8EDE6;
+      --ink-2:     #B0B8AC;
+      --ink-3:     #7E877A;
+      --accent:    #5FCBA8;
+      --accent-soft: #16302A;
+      --code-bg:   #202520;
+      --perfect:   #E8B944;
+      --good:      #62C98C;
+      --miss:      #E97C72;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:    #131614;
+    --surface:   #1B1F1C;
+    --surface-2: #242923;
+    --line:      #333A31;
+    --line-soft: #272D26;
+    --ink:       #E8EDE6;
+    --ink-2:     #B0B8AC;
+    --ink-3:     #7E877A;
+    --accent:    #5FCBA8;
+    --accent-soft: #16302A;
+    --code-bg:   #202520;
+    --perfect:   #E8B944;
+    --good:      #62C98C;
+    --miss:      #E97C72;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.76;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 var(--pad) 6rem; }
+
+  /* ---------- masthead ---------- */
+
+  .masthead { padding: clamp(3rem, 8vw, 5.5rem) 0 2.5rem; }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 1.1rem;
+  }
+
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 7vw, 4.4rem);
+    line-height: 1.1;
+    letter-spacing: -0.005em;
+    margin: 0 0 0.7rem;
+    text-wrap: balance;
+  }
+
+  .subtitle {
+    font-size: clamp(1rem, 2.2vw, 1.22rem);
+    font-weight: 300;
+    color: var(--ink-2);
+    margin: 0 0 2.5rem;
+    max-width: 46ch;
+    line-height: 1.6;
+  }
+
+  .factgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .fact { background: var(--surface); padding: 1rem 1.15rem; display: flex; flex-direction: column; gap: 0.3rem; }
+  .fact dt { font-family: var(--f-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+  .fact dd { margin: 0; font-size: 0.93rem; font-weight: 500; line-height: 1.45; }
+
+  /* ---------- judge hero ---------- */
+
+  .judge {
+    margin-top: 3rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  }
+
+  .judge > h2 { font-size: 1.2rem; margin: 0 0 0.35rem; }
+  .judge > p { font-size: 0.9rem; color: var(--ink-2); margin: 0 0 1.9rem; max-width: 62ch; }
+
+  .grades { display: flex; flex-direction: column; gap: 1.15rem; }
+
+  .grade {
+    display: grid;
+    grid-template-columns: 4.6rem minmax(0, 1fr) 4.4rem;
+    gap: 0.6rem 1rem;
+    align-items: center;
+  }
+
+  @media (max-width: 620px) {
+    .grade { grid-template-columns: 4.2rem minmax(0, 1fr); }
+    .grade .mult { grid-column: 2; justify-self: start; }
+  }
+
+  .grade .gname {
+    font-family: var(--f-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .track {
+    position: relative;
+    height: 34px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+  }
+
+  /* 판정선 구간 */
+  .zone {
+    position: absolute;
+    top: -1px; bottom: -1px;
+    left: 32%; width: 36%;
+    background: var(--accent-soft);
+    border-left: 2px solid var(--accent);
+    border-right: 2px solid var(--accent);
+  }
+
+  .note {
+    position: absolute;
+    top: 6px; bottom: 6px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--f-mono);
+    font-size: 0.64rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: 0.02em;
+  }
+
+  .grade .mult {
+    font-family: var(--f-mono);
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 620px) { .grade .mult { text-align: left; } }
+
+  .judge-note {
+    margin-top: 1.5rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--line-soft);
+    font-size: 0.86rem;
+    color: var(--ink-2);
+    max-width: 68ch;
+  }
+
+  /* ---------- layout ---------- */
+
+  .cols { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-top: 3.5rem; }
+
+  @media (min-width: 940px) {
+    .cols { grid-template-columns: 190px minmax(0, 1fr); gap: 3.5rem; align-items: start; }
+    .toc { position: sticky; top: 2rem; }
+  }
+
+  .toc ol {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 0.15rem 1rem;
+    font-family: var(--f-mono); font-size: 0.75rem;
+  }
+
+  @media (min-width: 940px) { .toc ol { flex-direction: column; gap: 0.35rem; } }
+
+  .toc a { color: var(--ink-3); text-decoration: none; border-bottom: 1px solid transparent; padding-bottom: 1px; }
+  .toc a:hover, .toc a:focus-visible { color: var(--accent); border-bottom-color: var(--accent); }
+
+  main { min-width: 0; }
+  section { margin-bottom: 4rem; scroll-margin-top: 1.5rem; }
+
+  h2 {
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: clamp(1.55rem, 3.5vw, 2.05rem);
+    line-height: 1.25;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  .lede { color: var(--ink-2); max-width: var(--measure); margin: 0 0 2rem; font-weight: 300; }
+
+  h3 { font-family: var(--f-display); font-weight: 400; font-size: 1.16rem; margin: 0; line-height: 1.4; }
+
+  p { max-width: var(--measure); }
+  a { color: var(--accent); }
+
+  /* ---------- metrics ---------- */
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem 2rem;
+    padding: 1.75rem 0;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .metric .num {
+    font-family: var(--f-mono); font-weight: 700;
+    font-size: clamp(1.7rem, 4vw, 2.25rem);
+    line-height: 1; letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums; display: block;
+  }
+
+  .metric .num span { font-size: 0.5em; color: var(--ink-3); font-weight: 400; letter-spacing: 0; }
+  .metric .cap { display: block; margin-top: 0.5rem; font-size: 0.82rem; color: var(--ink-2); line-height: 1.5; }
+
+  /* ---------- work cards ---------- */
+
+  .work { display: flex; flex-direction: column; gap: 1.75rem; }
+
+  .card {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: clamp(1.25rem, 3vw, 1.9rem);
+    display: flex; flex-direction: column; gap: 1.1rem;
+  }
+
+  .card-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 0.9rem;
+    padding-bottom: 0.9rem; border-bottom: 1px solid var(--line-soft);
+  }
+
+  .card-head .idx { font-family: var(--f-mono); font-size: 0.75rem; font-weight: 700; color: var(--accent); letter-spacing: 0.06em; }
+  .scope { margin-left: auto; font-family: var(--f-mono); font-size: 0.73rem; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+  .own { display: flex; flex-direction: column; gap: 0.45rem; }
+
+  .own-row {
+    display: grid; grid-template-columns: minmax(0, 1fr) 104px 50px;
+    align-items: center; gap: 0.65rem;
+    font-family: var(--f-mono); font-size: 0.74rem; color: var(--ink-2);
+  }
+
+  .own-row .file { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar { height: 7px; background: var(--surface-2); overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--accent); }
+  .own-row .pct { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 500; }
+
+  .qa { display: flex; flex-direction: column; gap: 0.75rem; }
+  .qa > div { display: grid; grid-template-columns: 3.9rem minmax(0, 1fr); gap: 0.9rem; align-items: start; }
+  .qa .tag {
+    font-family: var(--f-mono); font-size: 0.66rem; letter-spacing: 0.09em;
+    text-transform: uppercase; color: var(--ink-3); padding-top: 0.4rem;
+  }
+  .qa p { margin: 0; }
+
+  /* ---------- code ---------- */
+
+  pre {
+    margin: 0; background: var(--code-bg);
+    border-left: 2px solid var(--accent);
+    padding: 0.9rem 1.1rem; overflow-x: auto;
+    font-family: var(--f-mono); font-size: 0.78rem; line-height: 1.68; color: var(--ink);
+  }
+
+  code { font-family: var(--f-mono); font-size: 0.88em; }
+  p code, li code, td code { background: var(--code-bg); padding: 0.1em 0.35em; border-radius: 2px; }
+  .cmt { color: var(--ink-3); }
+
+  /* ---------- fix log ---------- */
+
+  .fixes { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+
+  .fix {
+    display: grid; grid-template-columns: 1fr; gap: 0.35rem;
+    padding: 1.15rem 0; border-bottom: 1px solid var(--line);
+  }
+
+  @media (min-width: 720px) {
+    .fix { grid-template-columns: 7.5rem minmax(0, 1fr); gap: 0.35rem 1.5rem; }
+  }
+
+  .fix .sha { font-family: var(--f-mono); font-size: 0.75rem; color: var(--perfect); font-weight: 500; }
+  .fix h3 { font-size: 1.02rem; margin-bottom: 0.3rem; }
+  .fix p { margin: 0; font-size: 0.92rem; color: var(--ink-2); }
+  .fix .body { min-width: 0; }
+
+  /* ---------- stack ---------- */
+
+  .stack { display: flex; flex-direction: column; gap: 1.5rem; }
+  .stack-group h3 {
+    font-family: var(--f-mono); font-weight: 700; font-size: 0.7rem;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 0.7rem;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .chip { font-size: 0.82rem; padding: 0.28rem 0.7rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+  .chip.key { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+  /* ---------- boundary ---------- */
+
+  .boundary {
+    border: 1px solid var(--line); border-left: 3px solid var(--perfect);
+    background: var(--surface); padding: clamp(1.1rem, 3vw, 1.6rem);
+  }
+  .boundary h2 { font-size: 1.2rem; margin-bottom: 0.6rem; }
+  .boundary p { font-size: 0.91rem; color: var(--ink-2); margin: 0 0 0.9rem; }
+  .boundary ul { margin: 0; padding-left: 1.1rem; font-size: 0.89rem; color: var(--ink-2); }
+  .boundary li { margin-bottom: 0.3rem; }
+  .boundary li b { color: var(--ink); font-weight: 700; }
+
+  /* ---------- links ---------- */
+
+  .links { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .links a { background: var(--surface); padding: 1.05rem 1.2rem; text-decoration: none; color: var(--ink); display: flex; flex-direction: column; gap: 0.25rem; }
+  .links a:hover, .links a:focus-visible { background: var(--accent-soft); }
+  .links .lbl { font-family: var(--f-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+  .links .val { font-size: 0.92rem; font-weight: 500; }
+
+  footer {
+    margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--line);
+    font-family: var(--f-mono); font-size: 0.73rem; color: var(--ink-3); line-height: 1.75;
+  }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Portfolio / Hyper-Casual · Platform</p>
+    <h1>카피바라 몸짱 만들기</h1>
+    <p class="subtitle">느긋한 카피바라를 근육질로 만드는 리듬 게임. 앱인토스에 올린 WebGL 미니앱으로, 기획부터 아트·개발까지 맡았습니다.</p>
+
+    <dl class="factgrid">
+      <div class="fact"><dt>역할</dt><dd>기획 · 개발 총괄 · 아트</dd></div>
+      <div class="fact"><dt>팀 구성</dt><dd>2인 (이한울)</dd></div>
+      <div class="fact"><dt>기간</dt><dd>2025.07 – 2026.06</dd></div>
+      <div class="fact"><dt>엔진</dt><dd>Unity 6000.3.2f1 · URP 17.3</dd></div>
+      <div class="fact"><dt>플랫폼</dt><dd>앱인토스 (WebGL)</dd></div>
+      <div class="fact"><dt>SDK</dt><dd>apps-in-toss-unity-sdk</dd></div>
+    </dl>
+  </header>
+
+  <div class="judge">
+    <h2>판정 규칙</h2>
+    <p>이 게임의 모든 것이 걸린 한 가지 계산입니다. 노트와 판정선의 <b>가로 겹침 비율</b>로 등급이 갈리고, 등급이 점수 배율을 정합니다. 시간이 아니라 UI 좌표의 겹침으로 판정해, 프레임레이트가 흔들려도 화면에 보이는 것과 판정이 어긋나지 않습니다.</p>
+
+    <div class="grades">
+      <div class="grade">
+        <span class="gname" style="color: var(--perfect)">PERFECT</span>
+        <div class="track">
+          <div class="zone"></div>
+          <div class="note" style="left: 36%; width: 28%; background: var(--perfect)">겹침 100%</div>
+        </div>
+        <span class="mult" style="color: var(--perfect)">×1.1</span>
+      </div>
+
+      <div class="grade">
+        <span class="gname" style="color: var(--good)">GOOD</span>
+        <div class="track">
+          <div class="zone"></div>
+          <div class="note" style="left: 50%; width: 28%; background: var(--good)">겹침 64%</div>
+        </div>
+        <span class="mult" style="color: var(--good)">×0.8</span>
+      </div>
+
+      <div class="grade">
+        <span class="gname" style="color: var(--miss)">MISS</span>
+        <div class="track">
+          <div class="zone"></div>
+          <div class="note" style="left: 62%; width: 28%; background: var(--miss)">겹침 21%</div>
+        </div>
+        <span class="mult" style="color: var(--miss)">×0</span>
+      </div>
+    </div>
+
+    <p class="judge-note">
+      노트가 판정선에 완전히 들어가면 Perfect, 노트 폭의 60% 이상이 겹치면 Good, 그 아래는 Miss입니다.
+      Good 임계값은 <code>[SerializeField]</code>로 노출해 인스펙터에서 난이도를 조절합니다.
+      계산은 <code>NoteJudge</code>라는 <code>static</code> 클래스에 있고 MonoBehaviour·씬 의존이 없어, 씬을 켜지 않고도 검증할 수 있습니다.
+    </p>
+  </div>
+
+  <div class="cols">
+    <nav class="toc" aria-label="목차">
+      <ol>
+        <li><a href="#metrics">기여 지표</a></li>
+        <li><a href="#work">담당 기술</a></li>
+        <li><a href="#fixes">문제 해결 기록</a></li>
+        <li><a href="#stack">기술 스택</a></li>
+        <li><a href="#boundary">협업 경계</a></li>
+        <li><a href="#links">자료</a></li>
+      </ol>
+    </nav>
+
+    <main>
+
+      <section id="metrics">
+        <h2>기여 지표</h2>
+        <p class="lede">저장소 전체 브랜치(120 커밋)를 클론해 <code>git blame</code>으로 집계했습니다. 외부 패키지에 딸려 온 TextMesh Pro 예제 스크립트는 분모에서 제외한, 팀이 직접 작성한 코드 기준입니다.</p>
+
+        <div class="metrics">
+          <div class="metric">
+            <span class="num">68<span> / 120</span></span>
+            <span class="cap">커밋 — 2인 팀에서 다수 지분<br>2025.07.19 첫 커밋 → 2026.06.15 최종</span>
+          </div>
+          <div class="metric">
+            <span class="num">3,404<span> / 3,777</span></span>
+            <span class="cap">직접 작성 코드 소유 라인<br><b>90.1%</b> · 스크립트 46개 중 44개</span>
+          </div>
+          <div class="metric">
+            <span class="num">6</span>
+            <span class="cap">게임 상태 · 5단계 페이즈<br>인트로 → 시작 → 플레이 ⇄ 휴식 → 종료</span>
+          </div>
+          <div class="metric">
+            <span class="num">3</span>
+            <span class="cap">카피바라 등급 도감<br>Normal · Rare · Finally</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="work">
+        <h2>담당 기술</h2>
+        <p class="lede">소유 지분 막대는 최종 <code>main</code>의 <code>git blame</code> 결과입니다.</p>
+
+        <div class="work">
+
+          <!-- 1 -->
+          <article class="card">
+            <div class="card-head">
+              <span class="idx">01</span>
+              <h3>판정 시스템 — 계산과 연출의 분리</h3>
+              <span class="scope">669줄 / 5파일</span>
+            </div>
+
+            <div class="own">
+              <div class="own-row"><span class="file">Judgement/JudgementSystem.cs</span><span class="bar"><i style="width:84%"></i></span><span class="pct">84%</span></div>
+              <div class="own-row"><span class="file">Judgement/JudgeEffectPresenter.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Judgement/NoteJudge.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Judgement/ComboTracker.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+            </div>
+
+            <div class="qa">
+              <div>
+                <span class="tag">문제</span>
+                <p>판정 클래스 하나가 겹침 계산, 콤보 갱신, 점수 산출, 파티클 15종 생성, 애니메이터 제어를 전부 들고 있었습니다. 밸런스를 한 번 만지면 연출이 깨지고, 연출을 고치면 점수가 틀어졌습니다.</p>
+              </div>
+              <div>
+                <span class="tag">해결</span>
+                <p>책임을 넷으로 갈랐습니다. <code>NoteJudge</code>가 겹침을 계산하고, <code>ComboTracker</code>가 콤보 상태를, <code>ScoreCalculator</code>가 점수 산술을 맡습니다. 셋 다 <b>MonoBehaviour가 아닌 순수 클래스</b>입니다. <code>JudgementSystem</code>은 이들을 호출해 흐름만 조율하고, 파티클·애니메이션은 런타임에 붙는 <code>JudgeEffectPresenter</code>에 위임합니다.</p>
+              </div>
+              <div>
+                <span class="tag">호환</span>
+                <p>연출 프리팹 참조 15개는 씬 와이어링을 깨뜨리지 않으려고 <code>JudgementSystem</code>의 <code>SerializeField</code>에 그대로 두고, 시작 시 프레젠터에 주입했습니다. 리팩터링 때문에 아티스트가 씬을 다시 연결하는 일이 없게 한 선택입니다.</p>
+              </div>
+              <div>
+                <span class="tag">콤보 규칙</span>
+                <p>콤보는 단순 연속 히트가 아니라 <b>같은 근육 부위를 연달아 쳤을 때만</b> 이어집니다. 부위가 바뀌면 초기화되고, 페이즈가 넘어가면 감소 패널티가 붙습니다.</p>
+              </div>
+            </div>
+
+            <pre><code><span class="cmt">// 노트 폭 대비 겹침 비율로 등급을 가른다 (씬 의존 없는 순수 계산)</span>
+float noteW     = Mathf.Max(0f, noteR - noteL);
+float overlapW  = Mathf.Max(0f, Mathf.Min(noteR, pointR) - Mathf.Max(noteL, pointL));
+float overlapRatio = (noteW &gt; 0f) ? (overlapW / noteW) : 0f;
+
+if (overlapRatio &gt;= 1f - Epsilon)          <span class="cmt">// 판정선 안에 완전히 포함</span>
+    { accuracy = JudgeAccuracy.Perfect; multiplier = 1.1f; }
+else if (overlapRatio &gt;= goodOverlapRatio) <span class="cmt">// 인스펙터에서 조정 (기본 0.60)</span>
+    { accuracy = JudgeAccuracy.Good;    multiplier = 0.8f; }
+else
+    { accuracy = JudgeAccuracy.Miss;    multiplier = 0f;   }</code></pre>
+          </article>
+
+          <!-- 2 -->
+          <article class="card">
+            <div class="card-head">
+              <span class="idx">02</span>
+              <h3>게임 흐름 — 상태 · 페이즈 · 컨디션</h3>
+              <span class="scope">600줄 / 8파일</span>
+            </div>
+
+            <div class="own">
+              <div class="own-row"><span class="file">Core/GameManager.cs</span><span class="bar"><i style="width:93%"></i></span><span class="pct">93%</span></div>
+              <div class="own-row"><span class="file">Core/PhaseManager.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Condition/ConditionSystem.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Condition/ConditionModel.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+            </div>
+
+            <div class="qa">
+              <div>
+                <span class="tag">구조</span>
+                <p>게임은 6개 상태(<code>Intro · Start · Playing · Rest · End</code>)를 오갑니다. <code>GameManager</code>가 전이를 단일 진입점에서 처리하고 <code>OnGameStateChanged</code>로 알리면, UI·사운드·노트 스포너가 각자 구독해 반응합니다. 상태를 바꾸는 코드가 UI를 직접 건드리지 않습니다.</p>
+              </div>
+              <div>
+                <span class="tag">난이도</span>
+                <p>운동 강도는 5단계 페이즈로 올라갑니다. 페이즈마다 휴식 전환 임계 터치 수가 달라(12 → 25) 뒤로 갈수록 오래 버텨야 쉬는 구간이 옵니다.</p>
+              </div>
+              <div>
+                <span class="tag">컨디션</span>
+                <p>Miss는 컨디션을 깎고 Perfect·Good은 회복시킵니다. 컨디션이 0이 되면 게임 오버라, 정확도가 곧 생존 시간이 됩니다. 값 로직은 <code>ConditionModel</code>이라는 순수 클래스가 갖고, <code>ConditionSystem</code>은 슬라이더 표시와 감소 코루틴만 맡습니다.</p>
+              </div>
+              <div>
+                <span class="tag">휴식</span>
+                <p>휴식 구간에서는 프로틴을 먹어 컨디션을 조금씩 회복하고, 이때도 콤보 배율(1.2 / 1.3 / 1.4)이 붙어 점수가 쌓입니다. 쉬는 시간이 그냥 멈춤이 되지 않게 한 장치입니다.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- 3 -->
+          <article class="card">
+            <div class="card-head">
+              <span class="idx">03</span>
+              <h3>앱인토스 플랫폼 연동</h3>
+              <span class="scope">124줄 / 1파일 + SDK 마이그레이션</span>
+            </div>
+
+            <div class="own">
+              <div class="own-row"><span class="file">Integration/AppInTossBridge.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Score/ResultSubmitter.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+            </div>
+
+            <div class="qa">
+              <div>
+                <span class="tag">범위</span>
+                <p>게임을 토스 미니앱으로 올리기 위해 WebGL 빌드 파이프라인을 구성하고, 공식 <code>apps-in-toss-unity-sdk</code>로 마이그레이션했습니다. 그 과정에서 Unity도 6000.0.31f1에서 6000.3.2f1로 올렸습니다.</p>
+              </div>
+              <div>
+                <span class="tag">리더보드</span>
+                <p>게임 종료 시 최종 점수를 앱인토스 리더보드에 제출합니다. 제출은 비동기라, 응답을 기다리는 동안 다시 호출되면 중복 제출이 됩니다. <code>isSubmittingScore</code> 플래그로 재진입을 막고 <code>finally</code>에서 반드시 해제해, 예외가 나도 플래그가 잠기지 않게 했습니다.</p>
+              </div>
+              <div>
+                <span class="tag">방어</span>
+                <p>제출 전에 숫자 형식을 검증하고, 응답은 <code>StatusCode</code>로 분기합니다. 응답이 아예 없는 경우(지원하지 않는 앱 버전)까지 별도 경고로 구분해, 실패 원인을 로그만 보고 판별할 수 있습니다.</p>
+              </div>
+            </div>
+
+            <pre><code>if (isSubmittingScore) return;      <span class="cmt">// 응답 대기 중 재호출 차단</span>
+isSubmittingScore = true;
+try
+{
+    var result = await SubmitLeaderboardScoreViaOfficialSdk(score);
+    if (result == null)                       <span class="cmt">// 미지원 앱 버전</span>
+        Debug.LogWarning("[AIT] 지원하지 않는 앱 버전이거나 응답이 없습니다.");
+    else if (result.StatusCode != "SUCCESS")
+        Debug.LogWarning($"[AIT] 점수 제출 실패: {result.StatusCode}");
+}
+finally { isSubmittingScore = false; }        <span class="cmt">// 예외에도 반드시 해제</span></code></pre>
+          </article>
+
+          <!-- 4 -->
+          <article class="card">
+            <div class="card-head">
+              <span class="idx">04</span>
+              <h3>카피바라 도감 — 결과 산출 규칙</h3>
+              <span class="scope">779줄 / 10파일</span>
+            </div>
+
+            <div class="own">
+              <div class="own-row"><span class="file">Score/CapybaraSelector.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Collector/Panel/FinallyPanelSetting.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Score/CapybaraStorage.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Data/UserData.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+            </div>
+
+            <div class="qa">
+              <div>
+                <span class="tag">설계</span>
+                <p>하이퍼캐주얼은 한 판이 짧아서, 다시 켤 이유가 필요했습니다. 결과 화면에서 <b>플레이 방식에 따라 다른 카피바라</b>가 나오고 도감에 수집되도록 만들었습니다.</p>
+              </div>
+              <div>
+                <span class="tag">규칙</span>
+                <p>기본은 총점 구간으로 Normal 등급을 정하지만, 총점이 6만 이상이고 <b>특정 부위 점수가 나머지 합의 2.5배를 넘으면</b> Rare로 승격됩니다. "가슴만 판 사람"과 "골고루 한 사람"이 다른 결과를 받는 구조라, 같은 점수라도 플레이 스타일이 결과에 남습니다.</p>
+              </div>
+              <div>
+                <span class="tag">구현</span>
+                <p>선정 규칙은 <code>CapybaraSelector</code>라는 순수 <code>static</code> 클래스에 두어 스프라이트·저장소와 분리했습니다. 결과는 <code>CapybaraSelection</code>(등급 + 인덱스) 구조체로만 반환하고, 어떤 이미지를 띄울지는 패널 쪽이 결정합니다.</p>
+              </div>
+              <div>
+                <span class="tag">저장</span>
+                <p>해금 상태는 등급별 키로 <code>UserData</code>에 저장합니다. 잠금(0)·해금(1) 값을 색으로 바꾸는 확장 메서드를 둬서, 도감 패널은 실루엣 처리를 한 줄로 끝냅니다.</p>
+              </div>
+            </div>
+
+            <pre><code><span class="cmt">// 점수가 충분하고 특정 부위가 압도적이면 Rare로 덮어쓴다</span>
+public static CapybaraSelection Select(ScoreResult result)
+{
+    CapybaraSelection baseSelection = SelectByScore(result.totalScore);
+
+    if (result.totalScore &gt;= RareUnlockScore &amp;&amp;
+        TryGetDominantRare(result, out int rareIndex))
+        return new CapybaraSelection(CapybaraTier.Rare, rareIndex);
+
+    return baseSelection;
+}</code></pre>
+          </article>
+
+          <!-- 5 -->
+          <article class="card">
+            <div class="card-head">
+              <span class="idx">05</span>
+              <h3>WebGL 성능과 데이터 주도 밸런싱</h3>
+              <span class="scope">537줄 / 5파일</span>
+            </div>
+
+            <div class="own">
+              <div class="own-row"><span class="file">Data/GameSettings.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Core/PoolManager.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Core/PooledObject.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Core/GameLogger.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+            </div>
+
+            <div class="qa">
+              <div>
+                <span class="tag">문제</span>
+                <p>리듬 게임은 노트와 판정 파티클을 초당 여러 개 만들고 버립니다. WebGL은 GC가 멈추면 그대로 프레임이 튀기 때문에, <code>Instantiate</code>/<code>Destroy</code> 반복이 가장 큰 위험이었습니다.</p>
+              </div>
+              <div>
+                <span class="tag">풀링</span>
+                <p>프리팹을 키로 쓰는 제너릭 풀을 만들어 인스턴스를 비활성 상태로 재사용합니다. 씬 전환으로 파괴돼 <code>null</code>이 된 항목은 대여 시 건너뛰고, 반납분은 씬 전환에도 살아남는 비활성 루트에 모읍니다.</p>
+              </div>
+              <div>
+                <span class="tag">이중 반납</span>
+                <p>연출을 교체할 때 같은 인스턴스가 두 경로에서 반납될 수 있었습니다. 대여 시 <b>세대 토큰</b>을 함께 발급하고 반납 시 세대가 일치할 때만 받아들여, 이미 재사용 중인 오브젝트가 다시 풀에 들어가는 것을 막았습니다.</p>
+              </div>
+              <div>
+                <span class="tag">로깅</span>
+                <p>디버그 로그를 <code>GameLogger</code>로 감싸고 <code>[Conditional("UNITY_EDITOR")]</code>·<code>[Conditional("DEVELOPMENT_BUILD")]</code>를 걸었습니다. 릴리즈 빌드에서는 <b>호출 자체가 컴파일 단계에서 사라져</b> 문자열 보간 비용까지 함께 없어집니다.</p>
+              </div>
+              <div>
+                <span class="tag">밸런싱</span>
+                <p>컨디션 증감, 콤보 배율, 페이즈별 휴식 임계치를 전부 <code>GameSettings</code>(ScriptableObject)에 모아 단일 출처로 삼았습니다. 수치 조정에 빌드가 필요 없어, 플레이 테스트 중에도 바로 고칠 수 있습니다.</p>
+              </div>
+            </div>
+
+            <pre><code><span class="cmt">// 릴리즈 빌드에서는 호출부가 통째로 제거된다 (문자열 보간 비용 포함)</span>
+[Conditional("UNITY_EDITOR")]
+[Conditional("DEVELOPMENT_BUILD")]
+public static void Log(object message) =&gt; UnityEngine.Debug.Log(message);</code></pre>
+          </article>
+
+        </div>
+      </section>
+
+      <section id="fixes">
+        <h2>문제 해결 기록</h2>
+        <p class="lede">플랫폼 특성상 기기·화면 비율이 제각각이라, 구조에서 원인을 찾아야 했던 사례들입니다.</p>
+
+        <div class="fixes">
+
+          <div class="fix">
+            <span class="sha">2026.03.12</span>
+            <div class="body">
+              <h3>기기마다 팝업이 화면을 벗어나던 문제</h3>
+              <p>웹뷰 폭이 기준 해상도보다 좁으면 팝업이 잘렸습니다. <code>OnRectTransformDimensionsChange</code>로 캔버스 크기 변화를 감지해, 기준 폭 대비 비율만큼 팝업을 축소하고 가로로 꽉 차야 하는 요소는 폭만 늘리도록 나눴습니다. 축소와 확장을 한 값으로 처리하지 않은 게 핵심이었습니다.</p>
+            </div>
+          </div>
+
+          <div class="fix">
+            <span class="sha">2026.02.27</span>
+            <div class="body">
+              <h3>앱인토스 SDK 전환</h3>
+              <p>직접 만든 API 호출을 걷어내고 공식 SDK로 옮겼습니다. 제출 로직을 <code>AppInTossBridge</code> 한 곳에 가두어, 게임 코드가 SDK 타입을 참조하지 않게 했습니다. 이후 SDK 버전이 바뀌어도 수정 범위가 이 파일 하나로 제한됩니다.</p>
+            </div>
+          </div>
+
+          <div class="fix">
+            <span class="sha">2026.01.16</span>
+            <div class="body">
+              <h3>Unity 6000.0.31f1 → 6000.3.2f1 마이그레이션</h3>
+              <p>SDK 요구 버전에 맞추기 위한 엔진 업그레이드였습니다. 함께 남아 있던 구형 WebGL 빌드 프로파일과 자체 토스 API 코드를 정리해, 빌드 경로를 하나로 통일했습니다.</p>
+            </div>
+          </div>
+
+          <div class="fix">
+            <span class="sha">2026.06.15</span>
+            <div class="body">
+              <h3>노트·파티클 반복 생성으로 인한 프레임 튐</h3>
+              <p>최종 정리 단계에서 오브젝트 풀을 도입해 <code>Instantiate</code>/<code>Destroy</code>를 재사용으로 바꿨습니다. 같은 시기에 <code>Debug.Log</code>를 전부 <code>GameLogger</code>로 교체해 릴리즈 빌드의 로깅 비용도 함께 제거했습니다.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section id="stack">
+        <h2>기술 스택</h2>
+        <p class="lede">직접 작성한 코드에서 실제로 사용한 항목입니다. 굵게 표시된 것이 이 프로젝트의 핵심 기술입니다.</p>
+
+        <div class="stack">
+          <div class="stack-group">
+            <h3>플랫폼</h3>
+            <div class="chips">
+              <span class="chip key">앱인토스 미니앱</span>
+              <span class="chip key">WebGL 빌드</span>
+              <span class="chip">apps-in-toss-unity-sdk</span>
+              <span class="chip">리더보드 연동</span>
+              <span class="chip">async / Task</span>
+              <span class="chip">엔진 버전 마이그레이션</span>
+            </div>
+          </div>
+
+          <div class="stack-group">
+            <h3>설계</h3>
+            <div class="chips">
+              <span class="chip key">순수 로직 분리 (테스트 가능)</span>
+              <span class="chip key">ScriptableObject 데이터 주도</span>
+              <span class="chip">상태 머신</span>
+              <span class="chip">Presenter 패턴</span>
+              <span class="chip">Singleton 매니저</span>
+              <span class="chip">이벤트 기반 UI 갱신</span>
+            </div>
+          </div>
+
+          <div class="stack-group">
+            <h3>성능</h3>
+            <div class="chips">
+              <span class="chip key">오브젝트 풀링</span>
+              <span class="chip">세대 토큰 이중 반납 방지</span>
+              <span class="chip">Conditional 로그 스트립</span>
+              <span class="chip">정적 버퍼 재사용</span>
+            </div>
+          </div>
+
+          <div class="stack-group">
+            <h3>Unity</h3>
+            <div class="chips">
+              <span class="chip key">Unity 6 · URP</span>
+              <span class="chip">uGUI · RectTransform 판정</span>
+              <span class="chip">TextMeshPro</span>
+              <span class="chip">Animator · 파티클 연출</span>
+              <span class="chip">AudioSource 사운드</span>
+              <span class="chip">해상도 대응 UI</span>
+              <span class="chip">PlayerPrefs 저장</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="boundary" class="boundary">
+        <h2>협업 경계</h2>
+        <p>2인 팀이라 영역이 겹치는 구간이 있었습니다. 아래는 팀원이 맡은 부분입니다.</p>
+        <ul>
+          <li><b>일부 파티클·이펙트 배치</b> — 콤보 박스, Fire Effect, Rail Point Effect 등</li>
+          <li><b>결과 화면 일부 이미지와 UI 조정</b> — 점수별 결과 카피바라, 스태미나 바 색상</li>
+          <li><b>배경 스크롤 · 점수 표시 스크립트</b> <code>heeyoung/02. Script</code> — 125줄</li>
+        </ul>
+      </section>
+
+      <section id="links">
+        <h2>자료</h2>
+        <div class="links">
+          <a href="https://github.com/toss-Project-Hyper-Casual-Game/toss-Project" target="_blank" rel="noopener"><span class="lbl">Repository</span><span class="val">GitHub — toss-Project</span></a>
+        </div>
+      </section>
+
+      <footer>
+        수치 산출: 전체 브랜치 클론 후 <code>git log --author</code> / <code>git blame --line-porcelain</code> 집계 · 기준 브랜치 <code>main</code> (최종 커밋 2026-06-15)<br>
+        작성 이한울 · hanwoolisland@gmail.com
+      </footer>
+
+    </main>
+  </div>
+</div>

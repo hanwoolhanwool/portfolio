@@ -1,0 +1,406 @@
+<title>이한울 포트폴리오</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500;600&family=Sunflower:wght@300;500;700&display=swap">
+
+<style>
+  :root {
+    --ground:    #F2F4F6;
+    --surface:   #FFFFFF;
+    --surface-2: #E7EAEE;
+    --line:      #D8DDE3;
+    --line-soft: #E6EAEF;
+    --ink:       #171B21;
+    --ink-2:     #454D58;
+    --ink-3:     #78818E;
+
+    /* 각 문서의 고유 색 — 어느 프로젝트로 가는지 카드가 미리 알려준다 */
+    --c-violet: #5F3FBE;
+    --c-sky:    #14708F;
+    --c-green:  #17705B;
+
+    --f-display: "Sunflower", "Malgun Gothic", sans-serif;
+    --f-body: "Gothic A1", "Malgun Gothic", system-ui, sans-serif;
+    --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+
+    --pad: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:    #0F1216;
+      --surface:   #171B21;
+      --surface-2: #202630;
+      --line:      #2C333D;
+      --line-soft: #232931;
+      --ink:       #E9EDF2;
+      --ink-2:     #AEB8C4;
+      --ink-3:     #7B8593;
+
+      --c-violet: #A98CFF;
+      --c-sky:    #6FCFEE;
+      --c-green:  #5FCBA8;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:    #0F1216;
+    --surface:   #171B21;
+    --surface-2: #202630;
+    --line:      #2C333D;
+    --line-soft: #232931;
+    --ink:       #E9EDF2;
+    --ink-2:     #AEB8C4;
+    --ink-3:     #7B8593;
+
+    --c-violet: #A98CFF;
+    --c-sky:    #6FCFEE;
+    --c-green:  #5FCBA8;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 var(--pad) 5rem; }
+
+  /* ---------- masthead ---------- */
+
+  .masthead { padding: clamp(3rem, 8vw, 5.5rem) 0 2.25rem; }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 1.1rem;
+  }
+
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: clamp(2.4rem, 7vw, 4.2rem);
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    margin: 0 0 0.9rem;
+    text-wrap: balance;
+  }
+
+  .pitch {
+    font-size: clamp(1.02rem, 2.2vw, 1.25rem);
+    font-weight: 300;
+    color: var(--ink-2);
+    margin: 0 0 2rem;
+    max-width: 52ch;
+    line-height: 1.62;
+  }
+
+  .contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.4rem;
+    font-family: var(--f-mono);
+    font-size: 0.82rem;
+    color: var(--ink-2);
+  }
+
+  .contact a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--line); }
+  .contact a:hover, .contact a:focus-visible { color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* ---------- totals ---------- */
+
+  .totals {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.25rem 2rem;
+    margin-top: 2.75rem;
+    padding: 1.6rem 0;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .total .n {
+    display: block;
+    font-family: var(--f-mono);
+    font-weight: 600;
+    font-size: clamp(1.5rem, 3.6vw, 2rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .total .l {
+    display: block;
+    margin-top: 0.45rem;
+    font-size: 0.8rem;
+    color: var(--ink-2);
+    line-height: 1.45;
+  }
+
+  /* ---------- section ---------- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.4rem;
+  }
+
+  .shead {
+    color: var(--ink-2);
+    font-size: 0.92rem;
+    font-weight: 300;
+    margin: 0 0 1.75rem;
+    max-width: 62ch;
+  }
+
+  /* ---------- project cards ---------- */
+
+  .cards { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--c);
+    padding: clamp(1.2rem, 3vw, 1.85rem);
+  }
+
+  .card:hover, .card:focus-visible { border-color: var(--c); }
+
+  .card-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.3rem 0.8rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .card .role {
+    font-family: var(--f-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c);
+    font-weight: 600;
+  }
+
+  .card .meta {
+    margin-left: auto;
+    font-family: var(--f-mono);
+    font-size: 0.76rem;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .card h3 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: clamp(1.25rem, 3vw, 1.6rem);
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    margin: 0 0 0.5rem;
+  }
+
+  .card .sum {
+    margin: 0 0 1.15rem;
+    color: var(--ink-2);
+    font-weight: 300;
+    max-width: 58ch;
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .stat { display: flex; flex-direction: column; gap: 0.1rem; }
+
+  .stat b {
+    font-family: var(--f-mono);
+    font-size: 0.98rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+  }
+
+  .stat span { font-size: 0.74rem; color: var(--ink-3); }
+
+  .go {
+    margin-left: auto;
+    align-self: flex-end;
+    font-family: var(--f-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--c);
+    white-space: nowrap;
+  }
+
+  /* ---------- resume row ---------- */
+
+  .resume {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1.25rem;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    padding: 1.15rem 1.4rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .resume:hover, .resume:focus-visible { border-color: var(--ink-3); }
+
+  .resume .rt { font-weight: 500; }
+  .resume .rd { color: var(--ink-2); font-size: 0.88rem; font-weight: 300; }
+  .resume .rgo { margin-left: auto; font-family: var(--f-mono); font-size: 0.78rem; font-weight: 600; color: var(--ink-2); white-space: nowrap; }
+
+  /* ---------- note ---------- */
+
+  .note {
+    margin-top: 3.5rem;
+    padding: 1.2rem 1.4rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    font-size: 0.87rem;
+    color: var(--ink-2);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  .note b { color: var(--ink); font-weight: 500; }
+  .note code { font-family: var(--f-mono); font-size: 0.86em; background: var(--surface-2); padding: 0.1em 0.35em; border-radius: 2px; }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--f-mono);
+    font-size: 0.73rem;
+    color: var(--ink-3);
+    line-height: 1.75;
+  }
+
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Unity Client / Game Developer</p>
+    <h1>이한울 포트폴리오</h1>
+    <p class="pitch">Photon 멀티플레이, 모션캡처 입력, 플랫폼 연동까지 — 게임이 입력을 받아 화면에 닿기까지의 구간을 만들어 왔습니다. 아래 세 프로젝트의 기여 수치는 모두 저장소에서 직접 집계한 값입니다.</p>
+
+    <div class="contact">
+      <span>이한울 · Lee Hanwool</span>
+      <a href="mailto:hanwoolisland@gmail.com">hanwoolisland@gmail.com</a>
+      <a href="https://github.com/hanwoolhanwool" target="_blank" rel="noopener">github.com/hanwoolhanwool</a>
+    </div>
+
+    <div class="totals">
+      <div class="total"><span class="n">3</span><span class="l">완성 프로젝트<br>Unity 6 · PC / WebGL</span></div>
+      <div class="total"><span class="n">418</span><span class="l">누적 커밋<br>153 · 197 · 68</span></div>
+      <div class="total"><span class="n">26,604</span><span class="l">git blame 소유 라인<br>최종 main 기준</span></div>
+      <div class="total"><span class="n">2–4<span style="font-size:0.6em; color:var(--ink-3)">인</span></span><span class="l">팀 규모<br>전원 협업 프로젝트</span></div>
+    </div>
+  </header>
+
+  <section>
+    <h2>프로젝트</h2>
+    <p class="shead">각 카드를 열면 담당 기술 5가지, 문제 해결 기록, 소유 지분 근거가 담긴 상세 문서로 이동합니다.</p>
+
+    <div class="cards">
+
+      <a class="card" style="--c: var(--c-sky)" href="sam-i-bang-portfolio.html" target="_blank" rel="noopener">
+        <div class="card-top">
+          <span class="role">기획 · 모션 인식 입력</span>
+          <span class="meta">4인 팀 · 2026.05 — 2026.06</span>
+        </div>
+        <h3>열받는 게임</h3>
+        <p class="sum">키보드 대신 웹캠 앞의 손동작으로 조작하는 3D 액션. MediaPipe 추론 결과를 게임 입력으로 바꾸는 5레이어 파이프라인을 전 구간 설계했습니다.</p>
+        <div class="stats">
+          <div class="stat"><b>49.1%</b><span>자체 코드 소유</span></div>
+          <div class="stat"><b>14,873</b><span>전담 모듈 라인</span></div>
+          <div class="stat"><b>197</b><span>커밋</span></div>
+          <span class="go">문서 열기 →</span>
+        </div>
+      </a>
+
+      <a class="card" style="--c: var(--c-green)" href="capybara-portfolio.html" target="_blank" rel="noopener">
+        <div class="card-top">
+          <span class="role">기획 · 개발 총괄 · 아트</span>
+          <span class="meta">2인 팀 · 2025.07 — 2026.06</span>
+        </div>
+        <h3>카피바라 몸짱 만들기</h3>
+        <p class="sum">느긋한 카피바라를 근육질로 만드는 리듬 게임. 앱인토스에 올린 WebGL 미니앱으로, 판정 로직부터 리더보드 연동과 성능 최적화까지 맡았습니다.</p>
+        <div class="stats">
+          <div class="stat"><b>90.1%</b><span>자체 코드 소유</span></div>
+          <div class="stat"><b>44 / 46</b><span>스크립트</span></div>
+          <div class="stat"><b>68</b><span>커밋</span></div>
+          <span class="go">문서 열기 →</span>
+        </div>
+      </a>
+
+      <a class="card" style="--c: var(--c-violet)" href="wizard-war-portfolio.html" target="_blank" rel="noopener">
+        <div class="card-top">
+          <span class="role">네트워크 시스템</span>
+          <span class="meta">4인 팀 · 2025.10 — 2025.11</span>
+        </div>
+        <h3>Trophy Hunter : Wizard War</h3>
+        <p class="sum">Photon PUN2 기반 4인 마법 배틀. 매칭부터 룸 진행, 방장 교체와 이탈 복구까지 멀티플레이의 흐름을 담당했습니다.</p>
+        <div class="stats">
+          <div class="stat"><b>19.9%</b><span>자체 코드 소유</span></div>
+          <div class="stat"><b>81%</b><span>매칭 시스템 소유</span></div>
+          <div class="stat"><b>153</b><span>커밋</span></div>
+          <span class="go">문서 열기 →</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>이력서</h2>
+    <p class="shead">세 프로젝트를 한 장으로 압축한 Selected Projects 섹션입니다.</p>
+
+    <a class="resume" href="selected-projects.html" target="_blank" rel="noopener">
+      <span class="rt">Selected Projects</span>
+      <span class="rd">이력서 지면용 요약 · 인쇄하면 PDF로 저장됩니다</span>
+      <span class="rgo">열기 →</span>
+    </a>
+  </section>
+
+  <p class="note">
+    <b>수치는 어떻게 냈나</b> — 각 저장소의 전체 브랜치를 클론한 뒤 <code>git log --author</code>로 커밋을, <code>git blame --line-porcelain</code>으로 최종 <code>main</code>에 살아남은 라인의 작성자를 집계했습니다.
+    분모에서 외부 패키지(MediaPipe Unity Plugin, TextMesh Pro 예제, 에셋 팩)는 제외해, 팀이 직접 작성한 코드만 비교했습니다.
+    각 문서에는 담당이 아닌 영역을 밝힌 <b>협업 경계</b> 항목도 함께 두었습니다.
+  </p>
+
+  <footer>
+    Unity 6 · C# · Photon PUN2 · MediaPipe · WebGL<br>
+    이한울 · hanwoolisland@gmail.com
+  </footer>
+
+</div>

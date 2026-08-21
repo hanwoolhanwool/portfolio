@@ -1,0 +1,859 @@
+<title>Wizard War 네트워크 파트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap">
+
+<style>
+  :root {
+    --ground: #F1EFF5;
+    --surface: #FBFAFD;
+    --surface-2: #E8E4EF;
+    --line: #D5CFE0;
+    --line-soft: #E4DFEC;
+    --ink: #1B1726;
+    --ink-2: #4A4359;
+    --ink-3: #756D86;
+    --rune: #5F3FBE;
+    --rune-soft: #EDE7FB;
+    --brass: #9C6F1C;
+    --brass-soft: #F6EDD8;
+    --code-bg: #EFEBF7;
+
+    --f-display: "Hahmlet", "Nanum Myeongjo", Georgia, serif;
+    --f-body: "IBM Plex Sans KR", "Malgun Gothic", system-ui, sans-serif;
+    --f-mono: "IBM Plex Mono", ui-monospace, "Consolas", monospace;
+
+    --measure: 66ch;
+    --pad: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #131019;
+      --surface: #1B1724;
+      --surface-2: #241F31;
+      --line: #362F47;
+      --line-soft: #2A2436;
+      --ink: #EDE9F5;
+      --ink-2: #B7AFC8;
+      --ink-3: #8A8199;
+      --rune: #A98CFF;
+      --rune-soft: #262038;
+      --brass: #D9A84A;
+      --brass-soft: #2D2415;
+      --code-bg: #201B2C;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #131019;
+    --surface: #1B1724;
+    --surface-2: #241F31;
+    --line: #362F47;
+    --line-soft: #2A2436;
+    --ink: #EDE9F5;
+    --ink-2: #B7AFC8;
+    --ink-3: #8A8199;
+    --rune: #A98CFF;
+    --rune-soft: #262038;
+    --brass: #D9A84A;
+    --brass-soft: #2D2415;
+    --code-bg: #201B2C;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 var(--pad) 6rem;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    padding: clamp(3rem, 8vw, 5.5rem) 0 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--rune);
+    margin: 0 0 1.25rem;
+  }
+
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: clamp(2.4rem, 6.5vw, 4.1rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.6rem;
+    text-wrap: balance;
+  }
+
+  .subtitle {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+    color: var(--ink-2);
+    margin: 0 0 2.5rem;
+    max-width: 46ch;
+    line-height: 1.5;
+  }
+
+  .factgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .fact {
+    background: var(--surface);
+    padding: 1rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .fact dt {
+    font-family: var(--f-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .fact dd {
+    margin: 0;
+    font-size: 0.94rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  /* ---------- layout ---------- */
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+
+  @media (min-width: 940px) {
+    .cols { grid-template-columns: 188px minmax(0, 1fr); gap: 3.5rem; align-items: start; }
+    .toc { position: sticky; top: 2rem; }
+  }
+
+  .toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 1rem;
+    font-family: var(--f-mono);
+    font-size: 0.76rem;
+  }
+
+  @media (min-width: 940px) {
+    .toc ol { flex-direction: column; gap: 0.35rem; }
+  }
+
+  .toc a {
+    color: var(--ink-3);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+  }
+
+  .toc a:hover, .toc a:focus-visible { color: var(--rune); border-bottom-color: var(--rune); }
+
+  main { min-width: 0; }
+
+  section { margin-bottom: 4rem; scroll-margin-top: 1.5rem; }
+
+  h2 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3.4vw, 2rem);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  .lede {
+    color: var(--ink-2);
+    max-width: var(--measure);
+    margin: 0 0 2rem;
+  }
+
+  h3 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: 1.12rem;
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  p { max-width: var(--measure); }
+
+  a { color: var(--rune); }
+
+  /* ---------- metrics ---------- */
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem 2rem;
+    padding: 1.75rem 0;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .metric .num {
+    font-family: var(--f-mono);
+    font-weight: 600;
+    font-size: clamp(1.7rem, 4vw, 2.3rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    display: block;
+  }
+
+  .metric .num span { font-size: 0.5em; color: var(--ink-3); letter-spacing: 0; }
+
+  .metric .cap {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.82rem;
+    color: var(--ink-2);
+    line-height: 1.45;
+  }
+
+  /* ---------- work cards ---------- */
+
+  .work { display: flex; flex-direction: column; gap: 1.75rem; }
+
+  .card {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: clamp(1.25rem, 3vw, 1.9rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 0.9rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .card-head .idx {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--rune);
+    letter-spacing: 0.06em;
+  }
+
+  .scope {
+    margin-left: auto;
+    font-family: var(--f-mono);
+    font-size: 0.74rem;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .own {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .own-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 108px 52px;
+    align-items: center;
+    gap: 0.65rem;
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    color: var(--ink-2);
+  }
+
+  .own-row .file {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .bar {
+    height: 7px;
+    background: var(--surface-2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bar i {
+    display: block;
+    height: 100%;
+    background: var(--rune);
+  }
+
+  .own-row .pct { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 500; }
+
+  .qa { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .qa > div { display: grid; grid-template-columns: 3.9rem minmax(0, 1fr); gap: 0.9rem; align-items: start; }
+
+  .qa .tag {
+    font-family: var(--f-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding-top: 0.35rem;
+  }
+
+  .qa p { margin: 0; }
+
+  /* ---------- code ---------- */
+
+  pre {
+    margin: 0;
+    background: var(--code-bg);
+    border-left: 2px solid var(--rune);
+    padding: 0.9rem 1.1rem;
+    overflow-x: auto;
+    font-family: var(--f-mono);
+    font-size: 0.79rem;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+
+  code { font-family: var(--f-mono); font-size: 0.88em; }
+
+  p code, li code, td code {
+    background: var(--code-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 2px;
+  }
+
+  .cmt { color: var(--ink-3); }
+
+  /* ---------- fix log ---------- */
+
+  .fixes { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+
+  .fix {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+    padding: 1.15rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  @media (min-width: 720px) {
+    .fix { grid-template-columns: 7.5rem minmax(0, 1fr); gap: 0.35rem 1.5rem; }
+  }
+
+  .fix .sha {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    color: var(--brass);
+    font-weight: 500;
+  }
+
+  .fix h3 { font-size: 1rem; margin-bottom: 0.3rem; }
+  .fix p { margin: 0; font-size: 0.92rem; color: var(--ink-2); }
+  .fix .body { min-width: 0; }
+
+  /* ---------- stack ---------- */
+
+  .stack { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .stack-group h3 {
+    font-family: var(--f-mono);
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 0.7rem;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-size: 0.83rem;
+    padding: 0.28rem 0.7rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+  }
+
+  .chip.key { border-color: var(--rune); background: var(--rune-soft); color: var(--rune); font-weight: 500; }
+
+  /* ---------- boundary ---------- */
+
+  .boundary {
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--brass);
+    background: var(--brass-soft);
+    padding: clamp(1.1rem, 3vw, 1.6rem);
+  }
+
+  .boundary h2 { font-size: 1.15rem; margin-bottom: 0.6rem; }
+  .boundary p { font-size: 0.92rem; color: var(--ink-2); margin: 0 0 0.9rem; }
+
+  .boundary ul { margin: 0; padding-left: 1.1rem; font-size: 0.9rem; color: var(--ink-2); }
+  .boundary li { margin-bottom: 0.3rem; }
+  .boundary li b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- links ---------- */
+
+  .links { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+
+  .links a {
+    background: var(--surface);
+    padding: 1.05rem 1.2rem;
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .links a:hover, .links a:focus-visible { background: var(--rune-soft); }
+
+  .links .lbl { font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.11em; text-transform: uppercase; color: var(--rune); }
+  .links .val { font-size: 0.93rem; font-weight: 500; }
+
+  footer {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--f-mono);
+    font-size: 0.74rem;
+    color: var(--ink-3);
+    line-height: 1.7;
+  }
+
+  :focus-visible { outline: 2px solid var(--rune); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Portfolio / Network &amp; Systems</p>
+    <h1>Trophy&nbsp;Hunter : Wizard&nbsp;War</h1>
+    <p class="subtitle">웹 기반 매칭부터 방 진행·이탈 복구까지, 4인 마법 배틀의 네트워크 흐름을 맡았습니다.</p>
+
+    <dl class="factgrid">
+      <div class="fact"><dt>역할</dt><dd>서버 · 카메라 · 인게임 시스템</dd></div>
+      <div class="fact"><dt>팀 구성</dt><dd>4인 (이한울 / 조원)</dd></div>
+      <div class="fact"><dt>기간</dt><dd>2025.10.16 – 11.11</dd></div>
+      <div class="fact"><dt>엔진</dt><dd>Unity 6000.2.7f2 · URP 17.2</dd></div>
+      <div class="fact"><dt>네트워크</dt><dd>Photon PUN2 2.51</dd></div>
+      <div class="fact"><dt>플랫폼</dt><dd>PC (Windows)</dd></div>
+    </dl>
+  </header>
+
+  <div class="cols">
+    <nav class="toc" aria-label="목차">
+      <ol>
+        <li><a href="#metrics">기여 지표</a></li>
+        <li><a href="#work">담당 기술</a></li>
+        <li><a href="#fixes">문제 해결 기록</a></li>
+        <li><a href="#stack">기술 스택</a></li>
+        <li><a href="#boundary">협업 경계</a></li>
+        <li><a href="#links">자료</a></li>
+      </ol>
+    </nav>
+
+    <main>
+
+      <section id="metrics">
+        <h2>기여 지표</h2>
+        <p class="lede">아래 수치는 저장소 전체 브랜치(1,188 커밋)를 클론해 <code>git log</code>·<code>git blame</code>으로 직접 집계한 값입니다. 최종 <code>main</code>에 남아 있는 라인 기준이라, 중간에 삭제·대체된 코드는 포함하지 않았습니다.</p>
+
+        <div class="metrics">
+          <div class="metric">
+            <span class="num">153</span>
+            <span class="cap">커밋 — 실작업 94 + 브랜치 머지 59<br>전용 브랜치 <code>LHW_Dev</code> 운용</span>
+          </div>
+          <div class="metric">
+            <span class="num">2,352<span> / 11,806</span></span>
+            <span class="cap">최종 main 스크립트 소유 라인<br><b>19.9%</b> — 4인 중 네트워크·시스템 영역 담당</span>
+          </div>
+          <div class="metric">
+            <span class="num">+6,801<span> / −4,506</span></span>
+            <span class="cap">누적 코드 변경량<br>삭제량이 큰 이유는 3차례 구조 리팩터링</span>
+          </div>
+          <div class="metric">
+            <span class="num">63<span> → 47</span></span>
+            <span class="cap">신규 작성 스크립트 → 최종 반영<br>나머지는 리팩터링 과정에서 통합·대체</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="work">
+        <h2>담당 기술</h2>
+        <p class="lede">소유 지분 막대는 최종 <code>main</code>의 <code>git blame</code> 결과입니다. 100%가 아닌 파일은 다른 팀원과 함께 만진 파일이라는 뜻이며, 그런 파일은 제가 작성한 메서드만 본문에 적었습니다.</p>
+
+        <div class="work">
+
+          <!-- 1 -->
+          <article class="card">
+            <div class="card-head">
+              <span class="idx">01</span>
+              <h3>카메라 시스템 — 전략 패턴 전환</h3>
+              <span class="scope">551줄 / 9파일</span>
+            </div>
+
+            <div class="own">
+              <div class="own-row"><span class="file">Camera/MainCamera/InGameCameraManager.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Camera/MainCamera/FirstPersonCamera.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Camera/MainCamera/ThirdPersonCamera.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Camera/FirstPersonCameraController.cs</span><span class="bar"><i style="width:94%"></i></span><span class="pct">94%</span></div>
+            </div>
+
+            <div class="qa">
+              <div>
+                <span class="tag">문제</span>
+                <p>초기 <code>FirstPersonCameraController</code> 하나가 마우스 회전, 사망 시 3인칭 전환, 커서 잠금, 오디오 리스너 등록, 설정값 반영을 모두 떠안고 있었습니다. 사망 → 관전 → 로비 복귀를 반복하면 부모 해제와 회전 초기화 순서가 어긋나 카메라가 허공에 남는 문제가 반복됐습니다.</p>
+              </div>
+              <div>
+                <span class="tag">해결</span>
+                <p><code>ICameraMode</code>(<code>Enter</code>/<code>Exit</code>/<code>Tick</code>) 인터페이스를 두고 1인칭·3인칭을 각각 독립 클래스로 분리한 뒤, <code>InGameCameraManager</code>가 Dictionary로 모드를 라우팅하도록 재설계했습니다. 진입·해제 시 필요한 초기화가 각 모드 안에 갇히면서 전환 순서 문제가 구조적으로 사라졌습니다.</p>
+              </div>
+              <div>
+                <span class="tag">디테일</span>
+                <p>1인칭은 <code>Update</code>, 3인칭은 <code>LateUpdate</code>에서 <code>Tick()</code>을 호출합니다. 추적 대상이 이동을 끝낸 뒤 카메라가 따라가야 3인칭에서 떨림이 생기지 않기 때문입니다.</p>
+              </div>
+            </div>
+
+            <pre><code>public void ChangeState(State.CameraState newState)
+{
+    if (newState == CurrentState) return;
+
+    var prev = CurrentState;
+    _currentMode?.Exit();                       <span class="cmt">// 이전 모드가 자기 뒷정리를 책임진다</span>
+
+    if (_cameras.TryGetValue(newState, out var next))
+    {
+        _currentMode = next;
+        _currentMode.Enter(_player, _playerInput);
+        CurrentState = newState;
+        OnCameraStateHandler?.Invoke(prev, newState);
+    }
+}</code></pre>
+          </article>
+
+          <!-- 2 -->
+          <article class="card">
+            <div class="card-head">
+              <span class="idx">02</span>
+              <h3>Photon 룸 진행 관리 — RoomDirector</h3>
+              <span class="scope">520줄 / 9파일</span>
+            </div>
+
+            <div class="own">
+              <div class="own-row"><span class="file">Network/RoomDirector.cs</span><span class="bar"><i style="width:56%"></i></span><span class="pct">56%</span></div>
+              <div class="own-row"><span class="file">Network/PhotonCallBack.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Network/PlayerSync.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">UI/Loading/ExitLoadingUI.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+            </div>
+
+            <div class="qa">
+              <div>
+                <span class="tag">범위</span>
+                <p>룸 상태 머신(<code>Waiting</code>/<code>Playing</code>/<code>GameOver</code>), 준비 완료 동기화, 로딩바 갱신, 게임 시작 조건 판정, 마스터 클라이언트 교체 대응, 연결 종료·퇴장 처리, 로비 복귀까지를 담당했습니다.</p>
+              </div>
+              <div>
+                <span class="tag">설계</span>
+                <p>준비 상태를 RPC가 아니라 <b>룸 CustomProperties</b>에 쌓았습니다. RPC는 보낸 순간 이후 들어온 클라이언트가 받지 못하지만, 프로퍼티는 방에 남아 있어 늦게 접속한 사람도 현재 준비 인원을 그대로 읽을 수 있습니다. 프로퍼티가 갱신될 때마다 <code>OnRoomPropertiesUpdate</code>가 호출되므로 로딩바 갱신 트리거도 같은 채널로 통일했습니다.</p>
+              </div>
+              <div>
+                <span class="tag">안정성</span>
+                <p>로비 복귀 시 <code>PhotonNetwork.IsMessageQueueRunning</code>을 잠시 꺼서 씬이 바뀌는 동안 도착한 RPC가 이미 파괴된 오브젝트를 건드리지 않게 막았습니다.</p>
+              </div>
+            </div>
+
+            <pre><code><span class="cmt">// 준비 완료를 룸 프로퍼티에 기록 → 모든 클라이언트가 같은 소스를 읽는다</span>
+public void SendReady()
+{
+    var props = new ExitGames.Client.Photon.Hashtable
+    {
+        { $"Ready_{PhotonNetwork.LocalPlayer.ActorNumber}", true }
+    };
+    PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+}
+
+<span class="cmt">// 마스터만 전원 준비 여부를 검사해 시작을 선언</span>
+private void CheckGameStartCondition()
+{
+    if (!PhotonNetwork.IsMasterClient || CurrentState != State.RoomState.Waiting) return;
+
+    foreach (var player in PhotonNetwork.PlayerList)
+    {
+        string key = $"Ready_{player.ActorNumber}";
+        if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(key) ||
+            !(bool)PhotonNetwork.CurrentRoom.CustomProperties[key]) return;
+    }
+    GameStart();
+}</code></pre>
+          </article>
+
+          <!-- 3 -->
+          <article class="card">
+            <div class="card-head">
+              <span class="idx">03</span>
+              <h3>매칭 시스템 — MatchManager</h3>
+              <span class="scope">277줄 / 3파일</span>
+            </div>
+
+            <div class="own">
+              <div class="own-row"><span class="file">Network/MatchManager.cs</span><span class="bar"><i style="width:81%"></i></span><span class="pct">81%</span></div>
+              <div class="own-row"><span class="file">Network/IMatching.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+            </div>
+
+            <div class="qa">
+              <div>
+                <span class="tag">문제</span>
+                <p>처음에는 로비 인원과 방 개수의 비율을 계산해 <b>방 생성</b>과 <b>랜덤 참가</b>를 직접 분기했습니다. 두 클라이언트가 같은 순간 "방이 없다"고 판단하면 각자 방을 만들어 1인 방 두 개가 생기는 경합이 발생했습니다.</p>
+              </div>
+              <div>
+                <span class="tag">해결</span>
+                <p>분기를 없애고 <code>JoinRandomOrCreateRoom</code> 하나로 통일했습니다. "매칭 중인 방이 있으면 참가, 없으면 그 이름으로 생성"을 서버가 원자적으로 판정하므로 클라이언트 간 경합 자체가 사라집니다. 매칭 중인 방만 후보로 잡히도록 <code>CustomRoomPropertiesForLobby</code>에 상태 키를 등록했습니다.</p>
+              </div>
+              <div>
+                <span class="tag">시작 조건</span>
+                <p>최소 인원(2명)이 모이면 8초 타이머 후 시작, 정원(4명)이 차면 즉시 시작으로 이원화했습니다. 대기 중 방장이 나가면 <code>OnMasterClientSwitched</code>에서 새 방장이 타이머를 이어받아, 남은 사람들이 무한 대기에 빠지지 않습니다.</p>
+              </div>
+            </div>
+
+            <pre><code>PhotonNetwork.JoinRandomOrCreateRoom(
+    expectedCustomRoomProperties: expectedProps,   <span class="cmt">// state == Matching 인 방만</span>
+    expectedMaxPlayers: 0,
+    roomOptions: roomOptions,
+    roomName: roomName);                            <span class="cmt">// 없으면 이 이름으로 생성</span></code></pre>
+          </article>
+
+          <!-- 4 -->
+          <article class="card">
+            <div class="card-head">
+              <span class="idx">04</span>
+              <h3>인게임 환경설정 &amp; 전역 입력</h3>
+              <span class="scope">427줄 / 15파일</span>
+            </div>
+
+            <div class="own">
+              <div class="own-row"><span class="file">UI/InGame/Setting/InGameSettingUI.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">UI/InGame/Setting/InGameEscUI.cs</span><span class="bar"><i style="width:90%"></i></span><span class="pct">90%</span></div>
+              <div class="own-row"><span class="file">Managers/Common/GlobalInputManager.cs</span><span class="bar"><i style="width:91%"></i></span><span class="pct">91%</span></div>
+              <div class="own-row"><span class="file">Managers/Common/CursorManager.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+            </div>
+
+            <div class="qa">
+              <div>
+                <span class="tag">구조</span>
+                <p>Esc 메뉴 · 설정 · 종료 확인 세 화면이 서로를 열고 닫는 관계라, 각 버튼이 상대 UI를 직접 여닫으면 조합이 폭발합니다. <code>InGameEscUI</code>가 세 화면의 상태를 한 곳에서 확정하는 방식으로 정리해, 버튼은 "어떤 화면이 되어야 하는지"만 지시합니다.</p>
+              </div>
+              <div>
+                <span class="tag">입력</span>
+                <p>Esc는 씬마다 다른 컴포넌트가 아니라 <code>GlobalInputManager</code>가 전역으로 한 번만 구독하고, 게임 상태(로비 / 매칭 / 인게임 / 종료)에 따라 동작을 분기합니다. 게임 종료 화면에서는 아예 무시해, 결과 화면에서 설정이 열리는 문제를 없앴습니다.</p>
+              </div>
+              <div>
+                <span class="tag">연동</span>
+                <p>설정 창이 열리면 <code>PlayerStateSetting</code> 상태로 전환해 이동·스킬 입력을 차단하고, 감도·카메라 높이는 <code>PlayerData</code>를 통해 실시간 반영 후 <code>PlayerPrefs</code>에 저장합니다.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- 5 -->
+          <article class="card">
+            <div class="card-head">
+              <span class="idx">05</span>
+              <h3>미니맵 — 상태 기반 아이콘</h3>
+              <span class="scope">231줄 / 7파일</span>
+            </div>
+
+            <div class="own">
+              <div class="own-row"><span class="file">Camera/MiniMapIcon/MiniMapIcon_Trophy.cs</span><span class="bar"><i style="width:98%"></i></span><span class="pct">98%</span></div>
+              <div class="own-row"><span class="file">Camera/MiniMapIcon/MiniMapIcon_Player.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Camera/MiniMapIcon/MiniMapIconManager.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+              <div class="own-row"><span class="file">Camera/MiniMapIcon/MiniMapSettings.cs</span><span class="bar"><i style="width:100%"></i></span><span class="pct">100%</span></div>
+            </div>
+
+            <div class="qa">
+              <div>
+                <span class="tag">구현</span>
+                <p>탑뷰 카메라의 Render Texture를 배경으로 깔고, 월드 좌표를 맵 스케일로 나눠 UI 좌표에 대응시켰습니다. 아이콘은 공통 베이스를 상속한 플레이어 · 트로피 · 포탈 세 종류로 나눠, 각자의 표시 조건만 재정의하도록 했습니다.</p>
+              </div>
+              <div>
+                <span class="tag">밸런스</span>
+                <p>"생존자가 2명 남으면 트로피와 포탈 위치를 공개한다"는 규칙은 기획 검증 중 자주 바뀌었습니다. 이 조건을 <code>MiniMapSettings</code>(ScriptableObject)로 빼서, 빌드 없이 인스펙터에서 켜고 끄며 테스트할 수 있게 했습니다.</p>
+              </div>
+              <div>
+                <span class="tag">결합도</span>
+                <p>트로피 스크립트는 다른 팀원 담당이라, 미니맵이 트로피 내부를 직접 참조하는 대신 <code>MiniMapIconManager</code>를 통해 상태 변경 이벤트만 주고받게 연결했습니다.</p>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <section id="fixes">
+        <h2>문제 해결 기록</h2>
+        <p class="lede">멀티플레이 QA에서 재현된 버그 중, 원인이 구조에 있었던 사례들입니다. 커밋 해시는 실제 저장소 기록입니다.</p>
+
+        <div class="fixes">
+
+          <div class="fix">
+            <span class="sha">9a13d57</span>
+            <div class="body">
+              <h3>설정 창을 닫아도 마우스 커서가 1초간 남는 문제</h3>
+              <p>커서 잠금을 <code>WaitForSeconds(1f)</code> 뒤에 걸고 있었습니다. UI가 닫히는 프레임과 잠금 프레임이 어긋나 그 사이 클릭이 게임 월드로 새어 들어갔습니다. 대기를 <code>WaitForEndOfFrame</code>으로 바꿔, UI 처리가 끝난 바로 그 프레임 끝에 잠기도록 했습니다.</p>
+            </div>
+          </div>
+
+          <div class="fix">
+            <span class="sha">e381df9</span>
+            <div class="body">
+              <h3>매칭 버튼 연속 클릭 시 방이 중복 생성되는 문제</h3>
+              <p>버튼이 현재 상태만 보고 매칭을 시작해, Photon 응답이 오기 전 다시 누르면 요청이 겹쳤습니다. 시작·취소를 코루틴으로 감싸 1초 래치를 걸고, 진입 조건에 <code>PhotonNetwork.InLobby</code>와 게임 상태 <code>None</code>을 추가해 응답 대기 중에는 아예 눌리지 않게 했습니다.</p>
+            </div>
+          </div>
+
+          <div class="fix">
+            <span class="sha">6246691</span>
+            <div class="body">
+              <h3>방장이 로딩 중 나가면 전원이 로딩 화면에 갇히는 문제</h3>
+              <p>게임 시작 조건 검사를 마스터 클라이언트만 돌리는데, 그 마스터가 이탈하면 검사 주체가 사라졌습니다. <code>OnMasterClientSwitched</code>에서 새 마스터가 로딩 코루틴을 다시 시작하도록 해, 승계된 방장이 판정을 이어받습니다.</p>
+            </div>
+          </div>
+
+          <div class="fix">
+            <span class="sha">ca793d5</span>
+            <div class="body">
+              <h3>강제 종료 시 생존자 수가 어긋나는 문제</h3>
+              <p>퇴장 처리가 자기 자신의 데이터를 먼저 지운 뒤 남에게도 알리는 구조라, 종료 경로에 따라 로컬만 두 번 감소하는 경우가 있었습니다. 로컬 삭제 없이 원격에만 통지하는 경로를 따로 만들어 종료 시나리오에서 분리했습니다.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section id="stack">
+        <h2>기술 스택</h2>
+        <p class="lede">직접 작성한 코드에서 실제로 사용한 항목만 적었습니다. 굵게 표시된 것이 이 프로젝트의 핵심 기술입니다.</p>
+
+        <div class="stack">
+          <div class="stack-group">
+            <h3>네트워크</h3>
+            <div class="chips">
+              <span class="chip key">Photon PUN2</span>
+              <span class="chip key">매칭 시스템</span>
+              <span class="chip">Room CustomProperties</span>
+              <span class="chip">PunRPC</span>
+              <span class="chip">IPunObservable</span>
+              <span class="chip">마스터 클라이언트 권한 제어</span>
+              <span class="chip">Lerp 보간 동기화</span>
+              <span class="chip">RTT(Ping) 계측</span>
+            </div>
+          </div>
+
+          <div class="stack-group">
+            <h3>설계 패턴</h3>
+            <div class="chips">
+              <span class="chip key">Strategy 패턴</span>
+              <span class="chip">State 패턴</span>
+              <span class="chip">Facade</span>
+              <span class="chip">이벤트 기반 디커플링</span>
+              <span class="chip">인터페이스 기반 라이프사이클</span>
+              <span class="chip">ScriptableObject 데이터 분리</span>
+            </div>
+          </div>
+
+          <div class="stack-group">
+            <h3>Unity</h3>
+            <div class="chips">
+              <span class="chip key">Unity 6 · URP</span>
+              <span class="chip key">Input System</span>
+              <span class="chip">Render Texture 미니맵</span>
+              <span class="chip">uGUI · TextMeshPro</span>
+              <span class="chip">PlayerPrefs</span>
+              <span class="chip">Coroutine 매니저</span>
+              <span class="chip">Custom Editor</span>
+            </div>
+          </div>
+
+          <div class="stack-group">
+            <h3>협업</h3>
+            <div class="chips">
+              <span class="chip">Git 브랜치 전략</span>
+              <span class="chip">GitHub</span>
+              <span class="chip">Notion 기술 문서</span>
+              <span class="chip">멀티플레이 QA</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="boundary" class="boundary">
+        <h2>협업 경계</h2>
+        <p>같은 파일을 여러 명이 나눠 작업한 프로젝트라, 제 담당이 아닌 부분을 명시합니다. 아래 항목은 제 기여로 계산하지 않았습니다.</p>
+        <ul>
+          <li><b>스폰 포인트 · 트로피 · 상자 생성</b> — <code>RoomDirector</code> 안에 있지만 다른 팀원이 작성 (제 기여는 룸 진행·로딩·이탈 처리)</li>
+          <li><b>플레이어 생존자 관리</b> <code>PlayerManager</code> — 185줄 중 4줄만 제 코드</li>
+          <li><b>오브젝트 풀링 · RPC 디스패처 · 사운드 매니저</b> — 팀원 구현 (설정 UI의 볼륨 연동부만 제 담당)</li>
+          <li><b>스킬 · 아이템 · 레벨 디자인</b> — 별도 담당자</li>
+        </ul>
+      </section>
+
+      <section id="links">
+        <h2>자료</h2>
+        <div class="links">
+          <a href="https://www.youtube.com/watch?v=6OJMzyL8cRw" target="_blank" rel="noopener"><span class="lbl">Video</span><span class="val">게임 플레이 영상</span></a>
+          <a href="https://www.youtube.com/watch?v=c15_Kz4dLtE" target="_blank" rel="noopener"><span class="lbl">Video</span><span class="val">매칭 시스템 시연</span></a>
+          <a href="https://www.youtube.com/watch?v=iaNyPAyPz9E" target="_blank" rel="noopener"><span class="lbl">Video</span><span class="val">미니맵 시연</span></a>
+          <a href="https://www.youtube.com/watch?v=IpMeA9eeFEw" target="_blank" rel="noopener"><span class="lbl">Video</span><span class="val">인게임 환경설정 시연</span></a>
+          <a href="https://github.com/Sanghun2/Wizard-War" target="_blank" rel="noopener"><span class="lbl">Repository</span><span class="val">GitHub — Wizard-War</span></a>
+        </div>
+      </section>
+
+      <footer>
+        수치 산출: 전체 브랜치 클론 후 <code>git log --author</code> / <code>git blame --line-porcelain</code> 집계 · 기준 커밋 <code>902e532</code> (main, 2025-11-14)<br>
+        작성 이한울 · hanwoolisland@gmail.com
+      </footer>
+
+    </main>
+  </div>
+</div>
