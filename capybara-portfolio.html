@@ -710,7 +710,7 @@ public static void Log(object message) =&gt; UnityEngine.Debug.Log(message);</co
           <div class="fix">
             <div class="body">
               <h3>앱인토스 SDK 전환</h3>
-              <p>직접 만든 API 호출을 걷어내고 공식 SDK로 옮겼습니다. 제출 로직을 <code>AppInTossBridge</code> 한 곳에 가두어, 게임 코드가 SDK 타입을 참조하지 않게 했습니다. 이후 SDK 버전이 바뀌어도 수정 범위가 이 파일 하나로 제한됩니다.</p>
+              <p>개발 도중 토스가 리더보드 점수의 등록·호출 방식을 공식 SDK 경유로 바꾸면서, 직접 붙여 두었던 API 호출이 더는 통하지 않게 됐습니다. <code>apps-in-toss-unity-sdk</code>로 옮기고 그에 맞춰 제출·조회 코드를 다시 썼습니다. 이때 관련 로직을 <code>AppInTossBridge</code> 한 곳에 가두어, 게임 코드가 SDK 타입을 참조하지 않게 했습니다. 이후 SDK 버전이 또 바뀌어도 수정 범위가 이 파일 하나로 제한됩니다.</p>
             </div>
           </div>
 
