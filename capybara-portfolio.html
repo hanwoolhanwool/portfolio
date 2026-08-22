@@ -124,6 +124,7 @@
   .fact { background: var(--surface); padding: 1rem 1.15rem; display: flex; flex-direction: column; gap: 0.3rem; }
   .fact dt { font-family: var(--f-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
   .fact dd { margin: 0; font-size: 0.93rem; font-weight: 500; line-height: 1.45; }
+  .fact dd .sub { display: block; margin-top: 0.15rem; font-size: 0.78rem; font-weight: 400; color: var(--ink-3); }
 
   /* ---------- judge hero ---------- */
 
@@ -330,11 +331,6 @@
     padding: 1.15rem 0; border-bottom: 1px solid var(--line);
   }
 
-  @media (min-width: 720px) {
-    .fix { grid-template-columns: 7.5rem minmax(0, 1fr); gap: 0.35rem 1.5rem; }
-  }
-
-  .fix .sha { font-family: var(--f-mono); font-size: 0.75rem; color: var(--perfect); font-weight: 500; }
   .fix h3 { font-size: 1.02rem; margin-bottom: 0.3rem; }
   .fix p { margin: 0; font-size: 0.92rem; color: var(--ink-2); }
   .fix .body { min-width: 0; }
@@ -390,7 +386,7 @@
     <dl class="factgrid">
       <div class="fact"><dt>역할</dt><dd>기획 · 개발 총괄 · 아트</dd></div>
       <div class="fact"><dt>팀 구성</dt><dd>2인 (이한울)</dd></div>
-      <div class="fact"><dt>기간</dt><dd>2025.07 – 2026.06</dd></div>
+      <div class="fact"><dt>기간</dt><dd>2025.10 – 2025.12<span class="sub">수업과 병행 · 이후 출시 준비 커밋</span></dd></div>
       <div class="fact"><dt>엔진</dt><dd>Unity 6000.3.2f1 · URP 17.3</dd></div>
       <div class="fact"><dt>플랫폼</dt><dd>앱인토스 (WebGL)</dd></div>
       <div class="fact"><dt>SDK</dt><dd>apps-in-toss-unity-sdk</dd></div>
@@ -458,7 +454,7 @@
         <div class="metrics">
           <div class="metric">
             <span class="num">68<span> / 120</span></span>
-            <span class="cap">커밋 — 2인 팀에서 다수 지분<br>2025.07.19 첫 커밋 → 2026.06.15 최종</span>
+            <span class="cap">커밋 — 2인 팀에서 다수 지분<br>개발부터 출시 준비까지 전 구간</span>
           </div>
           <div class="metric">
             <span class="num">3,404<span> / 3,777</span></span>
@@ -705,7 +701,6 @@ public static void Log(object message) =&gt; UnityEngine.Debug.Log(message);</co
         <div class="fixes">
 
           <div class="fix">
-            <span class="sha">2026.03.12</span>
             <div class="body">
               <h3>기기마다 팝업이 화면을 벗어나던 문제</h3>
               <p>웹뷰 폭이 기준 해상도보다 좁으면 팝업이 잘렸습니다. <code>OnRectTransformDimensionsChange</code>로 캔버스 크기 변화를 감지해, 기준 폭 대비 비율만큼 팝업을 축소하고 가로로 꽉 차야 하는 요소는 폭만 늘리도록 나눴습니다. 축소와 확장을 한 값으로 처리하지 않은 게 핵심이었습니다.</p>
@@ -713,7 +708,6 @@ public static void Log(object message) =&gt; UnityEngine.Debug.Log(message);</co
           </div>
 
           <div class="fix">
-            <span class="sha">2026.02.27</span>
             <div class="body">
               <h3>앱인토스 SDK 전환</h3>
               <p>직접 만든 API 호출을 걷어내고 공식 SDK로 옮겼습니다. 제출 로직을 <code>AppInTossBridge</code> 한 곳에 가두어, 게임 코드가 SDK 타입을 참조하지 않게 했습니다. 이후 SDK 버전이 바뀌어도 수정 범위가 이 파일 하나로 제한됩니다.</p>
@@ -721,7 +715,6 @@ public static void Log(object message) =&gt; UnityEngine.Debug.Log(message);</co
           </div>
 
           <div class="fix">
-            <span class="sha">2026.01.16</span>
             <div class="body">
               <h3>Unity 6000.0.31f1 → 6000.3.2f1 마이그레이션</h3>
               <p>SDK 요구 버전에 맞추기 위한 엔진 업그레이드였습니다. 함께 남아 있던 구형 WebGL 빌드 프로파일과 자체 토스 API 코드를 정리해, 빌드 경로를 하나로 통일했습니다.</p>
@@ -729,7 +722,6 @@ public static void Log(object message) =&gt; UnityEngine.Debug.Log(message);</co
           </div>
 
           <div class="fix">
-            <span class="sha">2026.06.15</span>
             <div class="body">
               <h3>노트·파티클 반복 생성으로 인한 프레임 튐</h3>
               <p>최종 정리 단계에서 오브젝트 풀을 도입해 <code>Instantiate</code>/<code>Destroy</code>를 재사용으로 바꿨습니다. 같은 시기에 <code>Debug.Log</code>를 전부 <code>GameLogger</code>로 교체해 릴리즈 빌드의 로깅 비용도 함께 제거했습니다.</p>
@@ -811,7 +803,7 @@ public static void Log(object message) =&gt; UnityEngine.Debug.Log(message);</co
       </section>
 
       <footer>
-        수치 산출: 전체 브랜치 클론 후 <code>git log --author</code> / <code>git blame --line-porcelain</code> 집계 · 기준 브랜치 <code>main</code> (최종 커밋 2026-06-15)<br>
+        수치 산출: 전체 브랜치 클론 후 <code>git log --author</code> / <code>git blame --line-porcelain</code> 집계 · 기준 브랜치 <code>main</code><br>
         작성 이한울 · hanwoolisland@gmail.com
       </footer>
 
